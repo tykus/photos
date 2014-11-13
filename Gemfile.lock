@@ -1,0 +1,10 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    exifr (1.2.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  exifr (~> 1.2.0)
