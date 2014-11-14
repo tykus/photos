@@ -8,13 +8,6 @@ class Photo
     @exif = extract_exif_data.exif
   end
 
-  def method_missing(m, *args)
-    if @exif.methods.include?(m)
-      return @exif.send(m)
-    end
-    super.missing_method(m)
-  end
-
   def new_filename
     "%4d-%02d-%02d %02d-%02d-%02d %s %s" % [date.year, date.month, date.day, date.hour, date.min, date.sec, @exif.make, @exif.model]
   end
@@ -27,7 +20,16 @@ class Photo
     date.month
   end
 
+
   private
+
+    def method_missing(m, *args)
+      if @exif.methods.include?(m)
+        return @exif.send(m)
+      end
+      super.missing_method(m)
+    end
+
     def extract_exif_data
       EXIFR::JPEG.new @path
     end
