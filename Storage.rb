@@ -15,10 +15,11 @@ class Storage
   end
 
   def move old_path, new_path
-    if (valid_path?(old_path) && valid_path?(new_path))
-      File.rename old_path, new_path
-    end
+    if not valid_path?(new_path) make_directory(new_path)
+    File.rename old_path, new_path if valid_path?(old_path)
   end
+
+  def
 
   def valid_path? path
     if not (File.directory?(path) && Dir.exists?(path))
@@ -28,6 +29,13 @@ class Storage
     return true
   end
 
-  private :valid_path?
+  def make_directory path
+    path.split('/').each do |dir|
+      Dir.mkdir(dir) if not Dir.exists?(dir)
+      Dir.chdir(dir)
+    end
+  end
+
+  private :valid_path?, :make_directory
 
 end
