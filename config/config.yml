@@ -1,0 +1,9 @@
+storage:
+  # Setup defaults for storage locations
+  source: /Users/brian/Dropbox/
+  destination: /Users/brian/Pictures
+  extension: jpg
+
+logging:
+  logfile: log/organizer.log
+  level: Logger::DEBUG
