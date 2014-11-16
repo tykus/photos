@@ -20,7 +20,6 @@ class Photo
     date.month
   end
 
-
   private
 
     def method_missing(m, *args)

@@ -1,27 +1,31 @@
 require_relative 'photo'
+require_relative 'storage'
+require 'logger'
+require 'yaml'
 
 class Organizer
+  attr_reader :log
 
-  def initialize source, destination
-    @source = source
-    @destination = destination
-    go_organize if paths_are_valid
+  def initialize source = "", destination = ""
+    read_config
+    setup_logging
+
+    @source = source if source.length > 0
+    @destination = destination if destination.length > 0
+
+    @storage = Storage.new @log
+    @files = @storage.get_files(@source, @extension)
+    @log.info "#{@files.length} files found with #{@extension} extension."
+
+    # go_organize
   end
 
   private
-    def paths_are_valid
-      valid = true
-      [@source, @destination].each do |path|
-        valid &&= Dir.exists? path
-      end
-    end
-
     def go_organize
       Dir.chdir @destination
-      get_files.each do |path|
+      @files.each do |path|
         photo = Photo.new path
-        # File.rename(path, make_path(photo))
-        puts make_path(photo)
+        @storage.mv photo.path, make_path(photo)
       end
     end
 
@@ -29,7 +33,18 @@ class Organizer
       "/%d/%02d/%s" % [photo.year, photo.month, photo.new_filename]
     end
 
-    def get_files
-      Dir["#{@source}/**/*.{JPG,jpg}"]
+    def read_config
+      @config = YAML.load_file("config/config.yml")
+      @config["storage"].each { |key, value| instance_variable_set("@#{key}", value) }
+    end
+
+    def setup_logging
+      @log = Logger.new(@config["logging"]["logfile"], 5, 10*1024)
+      @log.level = Logger::DEBUG
+      @log.datetime_format = "%H:%M:%S"
+      @log.info "Organizer started"
     end
 end
+
+# Executable
+Organizer.new '.'
