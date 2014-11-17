@@ -36,8 +36,8 @@ class Photo
       begin
         exif = EXIFR::JPEG.new @path
         exif.exif
-      rescue
-        @log.warn "Problem encountered processing #{@path}"
+      rescue => err
+        @log.warn "#{@path} ::: #{err}"
         nil
       end
     end
