@@ -23,7 +23,7 @@ class Organizer
     def go_organize
       Dir.chdir @destination
       @files.each do |path|
-        photo = Photo.new path
+        photo = Photo.new path, @log
         @storage.move(photo.path, make_path(photo)) unless photo.exif.nil?
       end
     end

@@ -3,8 +3,9 @@ require 'exifr'
 class Photo
   attr_reader :path, :exif
 
-  def initialize path
+  def initialize path, log=Logger.new(STDOUT)
     @path = path
+    @log = log
     @exif = extract_exif_data
   end
 
