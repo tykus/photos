@@ -1,10 +1,9 @@
-require_relative 'photo'
-require_relative 'storage'
+require_relative 'Photo'
+require_relative 'Storage'
 require 'logger'
 require 'yaml'
 
 class Organizer
-  attr_reader :log
 
   def initialize source = "", destination = ""
     read_config
@@ -15,9 +14,9 @@ class Organizer
 
     @storage = Storage.new @log
     @files = @storage.get_files(@source, @extension)
-    @log.info "#{@files.length} files found with #{@extension} extension."
+    @log.info "#{@files.length} files found with '#{@extension}' extension."
 
-    # go_organize
+    go_organize
   end
 
   private
@@ -25,12 +24,12 @@ class Organizer
       Dir.chdir @destination
       @files.each do |path|
         photo = Photo.new path
-        @storage.mv photo.path, make_path(photo)
+        @storage.move(photo.path, make_path(photo)) unless photo.exif.nil?
       end
     end
 
     def make_path photo
-      "/%d/%02d/%s" % [photo.year, photo.month, photo.new_filename]
+      "#{@destination}/%d/%02d/%s" % [photo.year, photo.month, photo.new_filename]
     end
 
     def read_config
@@ -42,9 +41,9 @@ class Organizer
       @log = Logger.new(@config["logging"]["logfile"], 5, 10*1024)
       @log.level = Logger::DEBUG
       @log.datetime_format = "%H:%M:%S"
-      @log.info "Organizer started"
+      @log.info "Organizer started\nSorting #{@extension} files in #{@source}"
     end
 end
 
 # Executable
-Organizer.new '.'
+Organizer.new

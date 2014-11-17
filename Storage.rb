@@ -15,23 +15,32 @@ class Storage
   end
 
   def move old_path, new_path
-    if not valid_path?(new_path) make_directory(new_path)
-    File.rename old_path, new_path if valid_path?(old_path)
+    destination_directory = File.split(new_path)[0]
+    unless valid_path?(destination_directory)
+      @log.warn "Destination directory does not exist - creating it now."
+      make_directory(destination_directory)
+    end
+
+    if File.exists? new_path
+      @log.warn "File already exists at #{new_path}"
+    else
+      @log.info "Moving file from #{old_path} to #{new_path}"
+      print "."
+      File.rename(old_path, new_path) unless File.exists?(new_path)
+    end
   end
 
-  def
-
-  def valid_path? path
-    if not (File.directory?(path) && Dir.exists?(path))
-      @log.warn "The path #{path} was not found or is not a directory."
-      return false
-    end
-    return true
+  def valid_path?(path)
+    Dir.exists?(path) && File.directory?(path)
   end
 
   def make_directory path
+    @log.info "Making new directory at #{path}"
     path.split('/').each do |dir|
-      Dir.mkdir(dir) if not Dir.exists?(dir)
+      dir = '/' if dir == ""
+      unless Dir.exists?(dir)
+        Dir.mkdir(dir)
+      end
       Dir.chdir(dir)
     end
   end

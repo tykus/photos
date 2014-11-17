@@ -9,7 +9,7 @@ class Photo
   end
 
   def new_filename
-    "%4d-%02d-%02d %02d-%02d-%02d %s %s" % [date.year, date.month, date.day, date.hour, date.min, date.sec, @exif.make, @exif.model]
+    "%4d-%02d-%02d %02d-%02d-%02d %s %s.jpg" % [date.year, date.month, date.day, date.hour, date.min, date.sec, @exif.make, @exif.model]
   end
 
   def year
@@ -21,6 +21,8 @@ class Photo
   end
 
   private
+
+    # @TODO make instance variables of the EXIF data which is of interest to the application.
 
     def method_missing(m, *args)
       if @exif.methods.include?(m)
