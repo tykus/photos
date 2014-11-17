@@ -38,7 +38,7 @@ class Organizer
     end
 
     def setup_logging
-      @log = Logger.new(@config["logging"]["logfile"], 5, 10*1024)
+      @log = Logger.new(@config["logging"]["logfile"], 'daily')
       @log.level = Logger::DEBUG
       @log.datetime_format = "%H:%M:%S"
       @log.info "Organizer started\nSorting #{@extension} files in #{@source}"
