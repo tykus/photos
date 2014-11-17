@@ -26,7 +26,7 @@ class Storage
     else
       @log.info "Moving file from #{old_path} to #{new_path}"
       print "."
-      File.rename(old_path, new_path) unless File.exists?(new_path)
+      File.rename(old_path, new_path)
     end
   end
 

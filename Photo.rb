@@ -5,7 +5,7 @@ class Photo
 
   def initialize path
     @path = path
-    @exif = extract_exif_data.exif
+    @exif = extract_exif_data
   end
 
   def new_filename
@@ -32,7 +32,13 @@ class Photo
     end
 
     def extract_exif_data
-      EXIFR::JPEG.new @path
+      begin
+        exif = EXIFR::JPEG.new @path
+        exif.exif
+      rescue
+        @log.warn "Problem encountered processing #{@path}"
+        nil
+      end
     end
 
     def date

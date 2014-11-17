@@ -1,7 +1,7 @@
 storage:
   # Setup defaults for storage locations
-  source: /home/brian/Pictures
-  destination: /home/brian/Pictures
+  source: /volume1/photo/staging
+  destination: /volume1/photo
   extension: jpg
 
 logging:
